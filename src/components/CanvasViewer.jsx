@@ -35,6 +35,7 @@ export default function CanvasViewer({ file }) {
       nodes={nodes}
       edges={edges}
       nodeTypes={nodeTypes}
+      colorMode="system"
       {...viewportProps}
       onMoveEnd={onMoveEnd}
       nodesDraggable={false}
