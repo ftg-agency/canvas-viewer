@@ -1,0 +1,121 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --sidebar-bg: #f4f4f5;
+  --sidebar-border: #e4e4e7;
+  --text: #18181b;
+  --text-dim: #71717a;
+  --accent: #2563eb;
+  --node-bg: #ffffff;
+  --node-border: #d4d4d8;
+  --group-bg: rgba(120, 120, 128, 0.06);
+  --group-border: #c4c4cc;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1e1e1e;
+    --sidebar-bg: #252526;
+    --sidebar-border: #333333;
+    --text: #e4e4e7;
+    --text-dim: #a1a1aa;
+    --accent: #3b82f6;
+    --node-bg: #2a2a2b;
+    --node-border: #3f3f46;
+    --group-bg: rgba(255, 255, 255, 0.04);
+    --group-border: #3f3f46;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.app { display: flex; height: 100vh; width: 100vw; overflow: hidden; }
+
+/* ── Sidebar ───────────────────────────────────────────── */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  padding: 16px 12px;
+  overflow-y: auto;
+}
+.sidebar-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 15px; margin: 0 0 16px; padding: 0 4px; color: var(--text);
+}
+.sidebar-list { display: flex; flex-direction: column; gap: 4px; }
+.sidebar-item {
+  text-align: left; padding: 8px 12px; border-radius: 6px; border: none;
+  cursor: pointer; background: transparent; color: var(--text-dim);
+  font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sidebar-item:hover { background: rgba(120, 120, 128, 0.12); color: var(--text); }
+.sidebar-item.is-active { background: var(--accent); color: #fff; font-weight: 600; }
+.sidebar-empty { color: var(--text-dim); font-size: 13px; padding: 0 4px; }
+
+/* ── Canvas area ───────────────────────────────────────── */
+.canvas-area { flex: 1; height: 100%; position: relative; }
+.cv-empty, .cv-error { padding: 24px; color: var(--text-dim); }
+.cv-error { color: #e11d48; }
+
+/* ── Nodes ─────────────────────────────────────────────── */
+.cv-node {
+  width: 100%; height: 100%;
+  background: var(--node-bg);
+  border: 2px solid var(--node-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.cv-md {
+  width: 100%; height: 100%;
+  overflow: auto;
+  padding: 10px 14px;
+  font-size: 14px; line-height: 1.5;
+}
+.cv-md > *:first-child { margin-top: 0; }
+.cv-md > *:last-child { margin-bottom: 0; }
+.cv-md pre { background: rgba(120, 120, 128, 0.14); padding: 8px; border-radius: 6px; overflow: auto; }
+.cv-md code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; }
+.cv-md img { max-width: 100%; }
+.cv-md table { border-collapse: collapse; }
+.cv-md th, .cv-md td { border: 1px solid var(--node-border); padding: 4px 8px; }
+.cv-md a { color: var(--accent); }
+
+.cv-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.cv-pdf { width: 100%; height: 100%; border: none; }
+.cv-chip { display: flex; align-items: center; gap: 8px; padding: 12px; font-size: 14px; color: var(--text); width: 100%; }
+.cv-chip span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Link node */
+.cv-link-card {
+  display: flex; align-items: center; gap: 8px; padding: 12px; width: 100%;
+  text-decoration: none; color: var(--text); font-size: 14px;
+}
+.cv-fav { width: 16px; height: 16px; flex-shrink: 0; }
+.cv-link-host { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cv-link-ext { color: var(--text-dim); flex-shrink: 0; }
+
+/* Group: фон позади нод, прозрачен для pan */
+.cv-group {
+  position: relative;
+  width: 100%; height: 100%;
+  border: 2px solid var(--group-border);
+  border-radius: 10px;
+  background: var(--group-bg);
+}
+.cv-group-label {
+  position: absolute; top: 6px; left: 10px;
+  font-size: 13px; font-weight: 600; color: var(--text-dim);
+}
+/* чтобы pan проходил «сквозь» группу */
+.react-flow__node.cv-group-wrapper { pointer-events: none; }
