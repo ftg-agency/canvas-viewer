@@ -32,8 +32,10 @@ export function useViewportPersistence(file) {
   const saved = useMemo(() => read(file), [file])
   const timerRef = useRef(null)
 
-  const onMoveEnd = useCallback(
-    (_event, viewport) => {
+  // Сохраняем позицию в момент реальной остановки (после инерции, см.
+  // usePanInertia). Лёгкий дебаунс — чтобы схлопнуть частые жесты.
+  const saveViewport = useCallback(
+    (viewport) => {
       if (!viewport) return
       if (timerRef.current) clearTimeout(timerRef.current)
       timerRef.current = setTimeout(() => {
@@ -42,7 +44,7 @@ export function useViewportPersistence(file) {
         } catch {
           /* приватный режим / переполнение — молча игнорируем */
         }
-      }, 300)
+      }, 200)
     },
     [file],
   )
@@ -51,5 +53,5 @@ export function useViewportPersistence(file) {
     ? { defaultViewport: saved }
     : { fitView: true, fitViewOptions: { padding: 0.15 } }
 
-  return { viewportProps, onMoveEnd }
+  return { viewportProps, saveViewport }
 }

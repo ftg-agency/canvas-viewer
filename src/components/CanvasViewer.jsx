@@ -3,6 +3,7 @@ import { ReactFlow, Background, Controls, MiniMap } from '@xyflow/react'
 import { getCanvas } from '../lib/loadCanvases.js'
 import { mapToReactFlow } from '../lib/mapToReactFlow.js'
 import { useViewportPersistence } from '../hooks/useViewportPersistence.js'
+import { usePanInertia } from '../hooks/usePanInertia.js'
 import TextNode from './nodes/TextNode.jsx'
 import FileNode from './nodes/FileNode.jsx'
 import LinkNode from './nodes/LinkNode.jsx'
@@ -16,7 +17,9 @@ const nodeTypes = {
 }
 
 export default function CanvasViewer({ file }) {
-  const { viewportProps, onMoveEnd } = useViewportPersistence(file)
+  const { viewportProps, saveViewport } = useViewportPersistence(file)
+  // инерция панорамирования; позиция сохраняется в момент остановки (onRest)
+  const { onMoveStart, onMove, onMoveEnd } = usePanInertia(saveViewport)
 
   const { nodes, edges, error } = useMemo(() => {
     try {
@@ -37,6 +40,8 @@ export default function CanvasViewer({ file }) {
       nodeTypes={nodeTypes}
       colorMode="system"
       {...viewportProps}
+      onMoveStart={onMoveStart}
+      onMove={onMove}
       onMoveEnd={onMoveEnd}
       nodesDraggable={false}
       nodesConnectable={false}
